@@ -1,36 +1,23 @@
-// Get the radio buttons and the start game button
-const easyRadio = document.getElementById('easy');
-const mediumRadio = document.getElementById('medium');
-const hardRadio = document.getElementById('hard');
+import { Game } from './game';
+// Get DOM elements
 const startGameButton = document.getElementById('start-game');
 const gameContainer = document.getElementById('game-container');
 const menu = document.getElementById('menu');
 
 // Add event listener to the start game button
-startGameButton.addEventListener('click', function() {
+startGameButton.addEventListener('click', handleStartGameButtonClick);
+
+function handleStartGameButtonClick() {
     // Get the selected level
-    let selectedLevel = '';
-    if (easyRadio.checked) {
-        selectedLevel = 'easy';
-    } else if (mediumRadio.checked) {
-        selectedLevel = 'medium';
-    } else if (hardRadio.checked) {
-        selectedLevel = 'hard';
-    } else {
-        alert("Please select a level.");
-        return;
-    }
+    const selectedLevel = document.querySelector('input[name="level"]:checked').value;
 
-    // Show the game container
-    gameContainer.hidden = false;
+    // Hide the menu and show the game container
     menu.hidden = true;
+    gameContainer.hidden = false;
 
-    // Start the game with the selected level
-    startGame(selectedLevel);
-});
-
-// Function to start the game with the selected level
-function startGame(level) {
-    // Do something here to start the game with the selected level
-    console.log('Starting game with level:', level);
+    // Initialize and start the game
+    const game = new Game(selectedLevel, gameContainer);
+    game.start();
 }
+
+handleStartGameButtonClick();
