@@ -11,7 +11,6 @@ export class Game {
 
     start() {
         console.log('Starting game with level:', this.level.difficulty);
-        this.board.drawBoard();
     }
 
 

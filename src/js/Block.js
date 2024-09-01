@@ -1,20 +1,12 @@
 export class Block {
-    constructor(initialState) {
-        // The current state of the block
-        this.state = initialState;
-        // Possible states
-        this.states = ['white', 'blue', 'green', 'yellow'];
+    constructor(color, x, y) {
+        this.color = color; // The color of the block
+        this.x = x;
+        this.y = y;
     }
 
-    // Method to advance to the next state
-    nextState() {
-        const currentIndex = this.states.indexOf(this.state);
-        const nextIndex = (currentIndex + 1) % this.states.length;
-        this.state = this.states[nextIndex];
-    }
-
-    // Method to compare this block's state with another block's state
+    // Method to compare this block's color with another block's color
     isEqual(otherBlock) {
-        return this.state === otherBlock.state;
+        return this.color === otherBlock.color;
     }
 }
