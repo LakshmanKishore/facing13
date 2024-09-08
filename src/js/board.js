@@ -1,4 +1,5 @@
 import { Block } from './block';
+import { Constants } from './constants';
 
 export class Board {
     constructor(rows, columns, container, game) {
@@ -7,7 +8,32 @@ export class Board {
         this.container = container;
         this.blocks = []; // Store the blocks here
         this.game = game;
+        this.boardColors = [];
+        this.block_types = Object.keys(Constants.BLOCK_TYPE);
+        this.randomBlockTypes = [];
+        this.setRandomNumbers();
         this.createBoard();
+    }
+
+    setRandomNumbers() {
+        console.log("this.blocktypes:", this.block_types);
+        for (let i = 0; i < 25; i++) {
+            if (i < 13) {
+                this.randomBlockTypes.push(this.block_types[i]);
+            } else {
+                this.randomBlockTypes.push(this.block_types[Math.floor(Math.random() * 13)]);
+            }
+        }
+
+        // Shuffle the array
+        for (let i = this.randomBlockTypes.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.randomBlockTypes[i], this.randomBlockTypes[j]] = [this.randomBlockTypes[j], this.randomBlockTypes[i]];
+        }
+
+        console.log("this.randomBlockTypes:", this.randomBlockTypes);
+        console.log("set of random numbers:", new Set(this.randomBlockTypes));
+
     }
 
     createBoard() {
@@ -16,25 +42,15 @@ export class Board {
         this.container.appendChild(table);
 
         for (let i = 0; i < this.rows; i++) {
-            const row = document.createElement('tr');
-            table.appendChild(row);
             this.blocks[i] = []; // Initialize the row in the blocks array
-
             for (let j = 0; j < this.columns; j++) {
-                const color = this.getRandomColor();
-                const block = new Block(color, i, j);
+                const randomBlockType = Constants.BLOCK_TYPE[this.randomBlockTypes[i * this.columns + j]];
+                const block = new Block(randomBlockType, i, j);
                 this.blocks[i][j] = block; // Store the block in the array
-
-                const cell = document.createElement('td');
-                cell.classList.add('td-block');
-                cell.style.backgroundColor = block.color;
-
-                cell.x = i;
-                cell.y = j;
-
-                row.appendChild(cell);
             }
         }
+
+        this.drawBoard();
 
         table.addEventListener('touchstart', (e) => this.handleTouchStart(e, "touch"));
         table.addEventListener('touchmove', (e) => this.handleTouchMove(e, "touch"));
@@ -43,11 +59,6 @@ export class Board {
         table.addEventListener("mousedown", (e) => this.handleTouchStart(e, "mouse"));
         table.addEventListener("mousemove", (e) => this.handleTouchMove(e, "mouse"));
         table.addEventListener("mouseup", (e) => this.handleTouchEnd(e, "mouse"));
-    }
-
-    getRandomColor() {
-        const colors = ['green', 'yellow', 'blue', 'red', 'orange', 'purple', 'pink', 'brown', 'cyan', 'magenta'];
-        return colors[Math.floor(Math.random() * colors.length)];
     }
 
     handleTouchStart(e, type) {
@@ -153,16 +164,28 @@ export class Board {
             this.blocks[targetRow][targetCol] = temp;
 
             // Update the display
-            this.updateBoard();
+            this.drawBoard();
         }
     }
 
-    updateBoard() {
+    drawBoard() {
         const table = this.container.querySelector('.board-table');
+        table.innerHTML = "";
         for (let i = 0; i < this.rows; i++) {
+            const row = document.createElement('tr');
+            table.appendChild(row);
             for (let j = 0; j < this.columns; j++) {
-                const cell = table.rows[i].cells[j];
-                cell.style.backgroundColor = this.blocks[i][j].color;
+                const block = this.blocks[i][j];
+                const cell = document.createElement('td');
+                cell.classList.add('td-block');
+                cell.style.backgroundColor = block.type.color;
+                cell.innerHTML = block.type.icon;
+                cell.style.fontSize = '3.5rem';
+
+                cell.x = i;
+                cell.y = j;
+
+                row.appendChild(cell);
             }
         }
     }
@@ -170,6 +193,7 @@ export class Board {
     // Method to compare the current board with a given pattern
     compareWithPattern() {
         const patternToCheck = this.game.createdPatterns[0].split(',');
+        console.log("blocks:", this.blocks);
 
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.columns; j++) {
@@ -182,7 +206,7 @@ export class Board {
 
                         subsetBlocks.push(
                             indexX >= 0 && indexX < this.rows && indexY >= 0 && indexY < this.columns && patternColor
-                                ? this.blocks[indexX][indexY].color
+                                ? this.blocks[indexX][indexY].type.color
                                 : null
                         );
                     }
@@ -192,6 +216,12 @@ export class Board {
                     // alert("Pattern Found!!!");
                     this.game.removeThirteenBlockAndPattern();
                     console.log("this.game.createdPatterns:", this.game.createdPatterns);
+                    if (this.game.blockCount <= Constants.BLOCK_13.APPEARANCE_COUNT) {
+                        this.game.addThirteenBlockWithPattern();
+                    } else {
+                        console.log("Game completed, successful in removing fear of 13 from Tessa. Good job!");
+                        this.game.endGame();
+                    }
                     return;
                 }
             }

@@ -1,12 +1,12 @@
 export class Block {
-    constructor(color, x, y) {
-        this.color = color; // The color of the block
+    constructor(type, x, y) {
+        this.type = type;
         this.x = x;
         this.y = y;
     }
 
     // Method to compare this block's color with another block's color
     isEqual(otherBlock) {
-        return this.color === otherBlock.color;
+        return this.type.color === otherBlock.type.color;
     }
 }

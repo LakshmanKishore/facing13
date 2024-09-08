@@ -27,9 +27,20 @@
         <button id="start-game">Start Game</button>
     </div>
 
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Congratulations!</h2>
+            <p>Tessa has successfully overcome her triskaidekaphobia. Thank you for playing and helping her!</p>
+            <button id="restart-game">Play Again</button>
+        </div>
+    </div>
+
+
     <div id="game-container" align="center" hidden>
         <div class="thirteen-blocks-and-patterns-container"></div>
-        Fear Meter: <progress class="progress-bar" value="1" max="100"></progress>
+        Fear Meter: <progress class="fear-meter" value="1" max="100"></progress>
     </div>
 
 </body>
