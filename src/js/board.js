@@ -1,16 +1,18 @@
 import { Block } from './block';
 
 export class Board {
-    constructor(rows, columns, container) {
+    constructor(rows, columns, container, game) {
         this.rows = rows;
         this.columns = columns;
         this.container = container;
         this.blocks = []; // Store the blocks here
+        this.game = game;
         this.createBoard();
     }
 
     createBoard() {
         const table = document.createElement('table');
+        table.classList.add('board-table');
         this.container.appendChild(table);
 
         for (let i = 0; i < this.rows; i++) {
@@ -24,8 +26,8 @@ export class Board {
                 this.blocks[i][j] = block; // Store the block in the array
 
                 const cell = document.createElement('td');
+                cell.classList.add('td-block');
                 cell.style.backgroundColor = block.color;
-                cell.style.border = '1px solid black';
 
                 cell.x = i;
                 cell.y = j;
@@ -41,7 +43,6 @@ export class Board {
         table.addEventListener("mousedown", (e) => this.handleTouchStart(e, "mouse"));
         table.addEventListener("mousemove", (e) => this.handleTouchMove(e, "mouse"));
         table.addEventListener("mouseup", (e) => this.handleTouchEnd(e, "mouse"));
-
     }
 
     getRandomColor() {
@@ -78,7 +79,12 @@ export class Board {
         // console.log("swipeDirection:", swipeDirection);
         if (swipeDirection) {
             this.swapBlocks(this.clickedCell.x, this.clickedCell.y, swipeDirection);
+            this.compareWithPattern();
         }
+
+        // Have to check if there are any patterns occurred on the board
+        console.log("blocks:", this.blocks);
+        console.log("createdPatterns:", this.game.createdPatterns);
     }
 
     getSwipeDirection() {
@@ -152,7 +158,7 @@ export class Board {
     }
 
     updateBoard() {
-        const table = this.container.querySelector('table');
+        const table = this.container.querySelector('.board-table');
         for (let i = 0; i < this.rows; i++) {
             for (let j = 0; j < this.columns; j++) {
                 const cell = table.rows[i].cells[j];
@@ -162,8 +168,33 @@ export class Board {
     }
 
     // Method to compare the current board with a given pattern
-    compareWithPattern(pattern) {
-        // Check for the pattern in the board and return true if found
-        // Pattern matching logic goes here
+    compareWithPattern() {
+        const patternToCheck = this.game.createdPatterns[0].split(',');
+
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.columns; j++) {
+                const subsetBlocks = [];
+                for (let x = -1; x <= 1; x++) {
+                    for (let y = -1; y <= 1; y++) {
+                        const indexX = i + x;
+                        const indexY = j + y;
+                        const patternColor = patternToCheck[(x + 1) * 3 + (y + 1)];
+
+                        subsetBlocks.push(
+                            indexX >= 0 && indexX < this.rows && indexY >= 0 && indexY < this.columns && patternColor
+                                ? this.blocks[indexX][indexY].color
+                                : null
+                        );
+                    }
+                }
+
+                if (subsetBlocks.join(',') === patternToCheck.join(",")) {
+                    // alert("Pattern Found!!!");
+                    this.game.removeThirteenBlockAndPattern();
+                    console.log("this.game.createdPatterns:", this.game.createdPatterns);
+                    return;
+                }
+            }
+        }
     }
 }

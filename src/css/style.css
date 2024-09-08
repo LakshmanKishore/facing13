@@ -1,8 +1,17 @@
+/* Declare variables */
+:root {
+    --block-height: 5rem;
+    --block-width: 5rem;
+    --block-rows-count: 5;
+    --block-columns-count: 5;
+}
+
 /* Basic styling */
 body {
     font-family: Arial, sans-serif;
     text-align: center;
     overscroll-behavior: contain;
+    user-select: none;
 }
 
 #menu {
@@ -20,9 +29,44 @@ body {
     border-collapse: collapse;
 } */
 
-td {
-    width: 3rem;
-    height: 3rem;
+.td-block {
+    width: var(--block-width);
+    height: var(--block-height);
     border: 1px solid black;
     background-color: white;
+}
+
+.thirteen-blocks-and-patterns-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: calc(var(--block-height) / 6);
+    text-align: center;
+    /* background-color: red; */
+    /* width: calc(var(--block-width) * var(--block-columns-count)); */
+}
+
+.thirteen-block-and-pattern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.thirteen-block {
+    width: 2rem;
+    height: 2rem;
+    background-color: blue;
+    text-align: center;
+    line-height: 2rem;
+    font-size: 1.5rem;
+    color: white;
+    border-radius: 5px;
+    margin-right: 0.2rem;
+}
+
+.td-pattern-block {
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-top: 0.2rem;
+    justify-content: center;
 }

@@ -1,4 +1,4 @@
-class Constants {
+export class Constants {
     static get BLOCK_SIZE() {
         return 30;
     }
@@ -23,4 +23,12 @@ class Constants {
             }
         };
     }
+
+    static get BLOCK_13() {
+        return {
+            APPEARANCE_INTERVAL: 13000,
+            APPEARANCE_COUNT: 13
+        }
+    }
+
 }

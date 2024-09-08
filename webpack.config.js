@@ -4,12 +4,18 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 const ZipWebpackPlugin = require('zip-webpack-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const { watchFile } = require('fs');
 
 module.exports = (env, options) => {
   const isProduction = options.mode === 'production';
 
   return {
     mode: options.mode,
+    devServer: {
+      hot: true,
+      watchFiles: ['src/**'],
+      port: 8080,
+    },
     entry: {
       index: './src/js/index.js',
     },
@@ -36,6 +42,7 @@ module.exports = (env, options) => {
       new HtmlWebpackPlugin({
         template: './src/html/index.html',
         inject: 'body',
+        liveReload: true,
       }),
       new CopyWebpackPlugin({
         patterns: [
