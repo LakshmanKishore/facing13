@@ -13,23 +13,45 @@ body {
     overscroll-behavior: contain;
     user-select: none;
     margin: 0px;
+    /* background-color: red; */
 }
 
-#menu {
-    margin: 20px auto;
-    width: 300px;
+.first {
+    height: 3rem;
+    width: 3rem;
+    fill: gray;
 }
 
-#game-container {
-    margin: 20px auto;
-    display: inline-block;
+.first-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 2px 2px;
+}
+
+.right {
+    display: flex;
+    flex-direction: row;
+}
+
+.moves-div {
+    font-size: 1.5rem;
 }
 
 .td-block {
     width: var(--block-width);
     height: var(--block-height);
-    border: 1px solid black;
-    background-color: white;
+    /* border: 1px solid black; */
+}
+
+.game-section {
+    display: flex;
+    max-height: 90vh;
+    max-width: 95vw;
+}
+
+#game-container {
+    width: 125%;
 }
 
 .thirteen-blocks-and-patterns-container {
@@ -99,6 +121,7 @@ body {
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
+    text-align: left;
 }
 
 .close {
@@ -113,4 +136,8 @@ body {
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.blocks-information {
+    text-align: left;
 }

@@ -44,8 +44,9 @@ export class Board {
         for (let i = 0; i < this.rows; i++) {
             this.blocks[i] = []; // Initialize the row in the blocks array
             for (let j = 0; j < this.columns; j++) {
-                const randomBlockType = Constants.BLOCK_TYPE[this.randomBlockTypes[i * this.columns + j]];
-                const block = new Block(randomBlockType, i, j);
+                const blockName = this.randomBlockTypes[i * this.columns + j];
+                const randomBlockType = Constants.BLOCK_TYPE[blockName];
+                const block = new Block(blockName, randomBlockType, i, j);
                 this.blocks[i][j] = block; // Store the block in the array
             }
         }
@@ -70,7 +71,7 @@ export class Board {
         let coordinates = type == "touch" ? e.touches[0] : e;
         // Handle the initial touch position
         this.swipeStart = { x: coordinates.clientX, y: coordinates.clientY };
-        this.clickedCell = e.target;
+        this.clickedCell = e.target.closest('td');
 
         // console.log("this.swipeStart:", this.swipeStart);
     }
@@ -89,6 +90,9 @@ export class Board {
         const swipeDirection = this.swipeEnd && this.getSwipeDirection();
         // console.log("swipeDirection:", swipeDirection);
         if (swipeDirection) {
+            if (this.clickedCell === null || swipeDirection === null) {
+                return;
+            }
             this.swapBlocks(this.clickedCell.x, this.clickedCell.y, swipeDirection);
             this.compareWithPattern();
         }
@@ -136,6 +140,7 @@ export class Board {
     }
 
     swapBlocks(row, col, direction) {
+        console.log("row:", row, "col:", col, "direction:", direction);
         // Determine the target column based on the swipe direction
         let targetCol = col;
         let targetRow = row;
@@ -166,6 +171,7 @@ export class Board {
             // Update the display
             this.drawBoard();
         }
+
     }
 
     drawBoard() {
@@ -178,10 +184,7 @@ export class Board {
                 const block = this.blocks[i][j];
                 const cell = document.createElement('td');
                 cell.classList.add('td-block');
-                cell.style.backgroundColor = block.type.color;
-                cell.innerHTML = block.type.icon;
-                cell.style.fontSize = '3.5rem';
-
+                cell.innerHTML = Constants.getBlockTypeSVG(block.name);
                 cell.x = i;
                 cell.y = j;
 

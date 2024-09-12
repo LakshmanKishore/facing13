@@ -1,6 +1,7 @@
 import { Level } from './level';
 import { Board } from './board';
 import { Constants } from './constants';
+import { Block } from './block';
 
 export class Game {
     constructor(level, container) {
@@ -10,11 +11,14 @@ export class Game {
         this.createdPatterns = [];
         this.board = new Board(this.settings.rows, this.settings.columns, this.container, this);
 
+        this.modalElement = document.querySelector('.modal');
         this.thirteenBlocksAndPatternsContainer = document.querySelector('.thirteen-blocks-and-patterns-container');
         this.fearMeter = document.querySelector('.fear-meter');
 
         this.patterns = ["000111000", "010010010", "100010001", "001010100", "100111000", "001111000", "010011000", "011010000", "001011000", "010010111", "011010010", "110010010", "010010110"];
 
+        this.handleMobileDevice();
+        this.fillBlocksInformation();
     }
 
     start() {
@@ -72,12 +76,13 @@ export class Game {
                 if (this.patterns[randomIndex][i * 3 + j] === '1') {
                     // Get a random number from the randomBlockTypes array
                     const randomIndex = Math.floor(Math.random() * randomBlockTypes.length);
-                    let randomBlockType = Constants.BLOCK_TYPE[randomBlockTypes[randomIndex]];
+                    const randomBlockTypeName = randomBlockTypes[randomIndex];
+                    let randomBlockType = Constants.BLOCK_TYPE[randomBlockTypeName];
                     // Remove the random block type from the array
                     randomBlockTypes.splice(randomIndex, 1);
 
-                    cell.style.backgroundColor = randomBlockType.color;
-                    cell.innerHTML = randomBlockType.icon;
+                    const block = new Block(randomBlockTypeName, randomBlockType, i, j);
+                    cell.innerHTML = Constants.getBlockTypeSVG(block.name);
                     patternColors.push(randomBlockType.color);
                 } else {
                     patternColors.push(null);
@@ -129,10 +134,51 @@ export class Game {
         alert("Game Over!");
     }
 
+    openModal(modalContentElement) {
+        this.modalElement.style.display = 'block';
+
+        // Set up the close button and restart button
+        const closeButton = this.modalElement.querySelector('.close');
+
+        const modalContentText = this.modalElement.querySelector('.modal-content-text');
+        modalContentText.innerHTML = modalContentElement.innerHTML;
+
+        // Close button logic
+        closeButton.onclick = () => {
+            this.modalElement.style.display = 'none';
+            this.container.hidden = false;
+        };
+
+        // Click outside the modal to close it
+        window.onclick = (event) => {
+            if (event.target == this.modalElement) {
+                this.modalElement.style.display = 'none';
+                this.container.hidden = false;
+            }
+        };
+    }
+
+    handleMobileDevice() {
+        const informationIconElement = document.querySelector(".iicon");
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+        if (isMobile) {
+            // Enable the i icon to display the information of each block.
+            informationIconElement.hidden = false;
+            const gameDescription = document.querySelector(".game-description");
+            gameDescription.hidden = true;
+
+            // Add event listener to the i icon
+            informationIconElement.addEventListener("click", () => {
+                this.openModal(gameDescription);
+            });
+        } else {
+            // Disable the i icon
+            informationIconElement.hidden = true;
+        }
+    }
+
     endGame() {
-        // Show a modal saying that the game is over and you have won the game
-        const gameOverModal = document.getElementById('game-over-modal');
-        gameOverModal.style.display = 'block';
 
         // Hide the game container
         this.container.hidden = true;
@@ -140,31 +186,38 @@ export class Game {
         // Stop the 13th block cycle
         this.stopThirteenBlockCycle();
 
-        // Set up the close button and restart button
-        const closeButton = gameOverModal.querySelector('.close');
-        const restartButton = gameOverModal.querySelector('#restart-game');
+        // const restartButton = gameOverModal.querySelector('#restart-game');
 
-        // Close button logic
-        closeButton.onclick = () => {
-            gameOverModal.style.display = 'none';
-            this.container.hidden = false;
-        };
+        // // Restart game button logic
+        // restartButton.onclick = () => {
+        //     gameOverModal.style.display = 'none';
+        //     this.container.hidden = false;
+        //     // Optionally, add logic to restart the game
+        //     this.start();
+        // };
 
-        // Restart game button logic
-        restartButton.onclick = () => {
-            gameOverModal.style.display = 'none';
-            this.container.hidden = false;
-            // Optionally, add logic to restart the game
-            this.start();
-        };
+    }
 
-        // Click outside the modal to close it
-        window.onclick = (event) => {
-            if (event.target == gameOverModal) {
-                gameOverModal.style.display = 'none';
-                this.container.hidden = false;
-            }
-        };
+    fillBlocksInformation() {
+        const blocksInformation = document.querySelector(".blocks-information");
+
+        const blockNames = Object.keys(Constants.BLOCK_TYPE);
+        const blockInformationUl = document.createElement("ul");
+        blockInformationUl.style.listStyleType = "none";
+
+        for (let i = 0; i < blockNames.length; i++) {
+            const blockName = blockNames[i];
+            const blockType = Constants.BLOCK_TYPE[blockName];
+            const blockInformation = document.createElement("li");
+            blockInformation.innerHTML = Constants.getBlockTypeSVG(blockName)
+            blockInformation.style.fontSize = "24px";
+            const blockInformationText = document.createTextNode(blockName);
+
+            blockInformation.appendChild(blockInformationText);
+            blockInformationUl.appendChild(blockInformation);
+        }
+
+        blocksInformation.appendChild(blockInformationUl);
     }
 
 

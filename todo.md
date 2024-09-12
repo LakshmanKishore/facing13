@@ -1,0 +1,9 @@
+- [x] Update emoji icons to google font svg icons.
+- [] Game level selection with a settings icon, which list easy, medium and hard.
+- [] Display each block's significance:
+  - In mobile it should be visible on click of a question mark icon.
+  - In desktop it should be visible on the right side of the screen and the game should be kept on left side with taking complete vh.
+- [] Update game logic for easy medium and hard.
+- [] Update the fear meter logic.
+  - Increment as and when block 13 appears.
+- [] Increase red color in the background as a radiant as and when fear meter increases.
