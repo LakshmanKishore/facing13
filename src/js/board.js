@@ -219,11 +219,8 @@ export class Board {
                     // alert("Pattern Found!!!");
                     this.game.removeThirteenBlockAndPattern();
                     console.log("this.game.createdPatterns:", this.game.createdPatterns);
-                    if (this.game.blockCount <= Constants.BLOCK_13.APPEARANCE_COUNT) {
+                    if (this.game.createdPatterns.length === 0) {
                         this.game.addThirteenBlockWithPattern();
-                    } else {
-                        console.log("Game completed, successful in removing fear of 13 from Tessa. Good job!");
-                        this.game.endGame();
                     }
                     return;
                 }

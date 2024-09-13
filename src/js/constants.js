@@ -115,8 +115,8 @@ export class Constants {
 
     static get BLOCK_13() {
         return {
-            APPEARANCE_INTERVAL: 1300,
-            APPEARANCE_COUNT: 1
+            APPEARANCE_INTERVAL: 13000,
+            APPEARANCE_COUNT: 13
         }
     }
 

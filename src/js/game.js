@@ -19,6 +19,8 @@ export class Game {
 
         this.handleMobileDevice();
         this.fillBlocksInformation();
+
+        window.onresize = this.handleMobileDevice.bind(this);
     }
 
     start() {
@@ -106,7 +108,7 @@ export class Game {
         this.increaseFearMeter(10);
 
         //Check if the fear meter is full
-        if (parseInt(this.fearMeter.value) >= 1000) {
+        if (parseInt(this.fearMeter.value) >= 100) {
             this.gameOver();
         }
     }
@@ -130,18 +132,52 @@ export class Game {
     }
 
     gameOver() {
-        console.log('Game over!');
-        alert("Game Over!");
+        this.container.hidden = true;
+
+        this.stopThirteenBlockCycle();
+
+        this.openModal(document.querySelector(".fail"));
+    }
+
+    endGame() {
+
+        // Hide the game container
+        this.container.hidden = true;
+
+        // Stop the 13th block cycle
+        this.stopThirteenBlockCycle();
+
+        // Show the game over modal
+        this.openModal(document.querySelector(".finish"));
+
     }
 
     openModal(modalContentElement) {
         this.modalElement.style.display = 'block';
 
-        // Set up the close button and restart button
-        const closeButton = this.modalElement.querySelector('.close');
+        // Set up the restart button
 
         const modalContentText = this.modalElement.querySelector('.modal-content-text');
         modalContentText.innerHTML = modalContentElement.innerHTML;
+
+        const restartGame = this.modalElement.querySelector('#restart-game');
+        const closeButton = this.modalElement.querySelector('.close');
+
+        console.log("restartGame", restartGame);
+
+        if (restartGame !== null) {
+            closeButton.hidden = true;
+            restartGame.onclick = () => {
+                this.modalElement.style.display = 'none';
+                this.container.hidden = false;
+                this.fearMeter.value = 0;
+
+                console.log("Restarting the game...");
+                // Optionally, add logic to restart the game
+                this.start();
+            };
+            return;
+        }
 
         // Close button logic
         closeButton.onclick = () => {
@@ -161,41 +197,26 @@ export class Game {
     handleMobileDevice() {
         const informationIconElement = document.querySelector(".iicon");
         const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        const gameDescription = document.querySelector(".game-description");
 
         if (isMobile) {
             // Enable the i icon to display the information of each block.
             informationIconElement.hidden = false;
-            const gameDescription = document.querySelector(".game-description");
             gameDescription.hidden = true;
 
             // Add event listener to the i icon
             informationIconElement.addEventListener("click", () => {
                 this.openModal(gameDescription);
+
+                // Get all the blocks information li element
+                const blockInformationUl = document.querySelector(".modal-content").querySelector("ul");
+                this.addBlockInformationSnackBar(blockInformationUl);
             });
         } else {
             // Disable the i icon
             informationIconElement.hidden = true;
+            gameDescription.hidden = false;
         }
-    }
-
-    endGame() {
-
-        // Hide the game container
-        this.container.hidden = true;
-
-        // Stop the 13th block cycle
-        this.stopThirteenBlockCycle();
-
-        // const restartButton = gameOverModal.querySelector('#restart-game');
-
-        // // Restart game button logic
-        // restartButton.onclick = () => {
-        //     gameOverModal.style.display = 'none';
-        //     this.container.hidden = false;
-        //     // Optionally, add logic to restart the game
-        //     this.start();
-        // };
-
     }
 
     fillBlocksInformation() {
@@ -209,16 +230,47 @@ export class Game {
             const blockName = blockNames[i];
             const blockType = Constants.BLOCK_TYPE[blockName];
             const blockInformation = document.createElement("li");
-            blockInformation.innerHTML = Constants.getBlockTypeSVG(blockName)
-            blockInformation.style.fontSize = "24px";
-            const blockInformationText = document.createTextNode(blockName);
+            blockInformation.setAttribute("blockName", blockName);
+            blockInformation.innerHTML = Constants.getBlockTypeSVG(blockName).replace("<svg", "<svg height='2rem' width='2rem'");
+
+            const blockInformationText = document.createTextNode(" -- " + blockType.meaning);
+
+            blockInformation.style.display = "flex";
+            blockInformation.style.alignItems = "center";
+            blockInformation.style.justifyContent = "left";
 
             blockInformation.appendChild(blockInformationText);
             blockInformationUl.appendChild(blockInformation);
         }
-
         blocksInformation.appendChild(blockInformationUl);
+        this.addBlockInformationSnackBar(blockInformationUl);
     }
 
+    addBlockInformationSnackBar(blockInformationUl) {
+        const blockInformationLis = blockInformationUl.querySelectorAll("li");
+
+        for (let i = 0; i < blockInformationLis.length; i++) {
+            const blockInformation = blockInformationLis[i];
+            const blockType = Constants.BLOCK_TYPE[blockInformation.getAttribute("blockName")];
+            blockInformation.onclick = () => {
+                console.log("snack bar should be popped up");
+                const snackbar = document.createElement("div");
+                snackbar.className = "snackbar";
+                snackbar.style.position = "absolute";
+                snackbar.style.top = `${blockInformation.offsetTop - 20}px`;
+                snackbar.style.left = `${blockInformation.offsetLeft}px`;
+                snackbar.style.borderRadius = "5px";
+                snackbar.style.zIndex = "9999";
+                snackbar.style.border = "1px dotted black";
+                snackbar.style.backgroundColor = "white";
+                snackbar.style.padding = "2px 2px";
+                snackbar.innerHTML = blockType.name + "---" + blockType.significance;
+                document.body.appendChild(snackbar);
+                setTimeout(() => {
+                    snackbar.remove();
+                }, 3000);
+            };
+        }
+    }
 
 }

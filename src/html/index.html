@@ -46,7 +46,6 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <p class="modal-content-text">
-                Here comes either the div thing, else the Congratulations or the Game Over or the i icon things.
             </p>
         </div>
     </div>
@@ -54,12 +53,15 @@
     <div class="finish" hidden>
         <h2>Congratulations!</h2>
         <p>Tessa has successfully overcome her triskaidekaphobia. Thank you for playing and helping her!</p>
+        <button id="restart-game">Restart Game</button>
     </div>
 
     <div class="fail" hidden>
         <h2>Game Over</h2>
-        <p>Tessa was unable to overcome her triskaidekaphobia due to which she went to coma. Thank you for playing and
+        <p>Fear meter maxed out and Tessa was unable to overcome her triskaidekaphobia due to which she went to coma.
+            Thank you for playing and
             helping her!</p>
+        <button id="restart-game">Restart Game</button>
     </div>
 
     <div class="game-section">
@@ -70,7 +72,8 @@
 
         <div class="game-description">
             <p>
-                Facing 13 is a game where you have to match the pattern displayed in the 5x5 grid, the fear meter will decrease.
+                Facing 13 is a game where you have to match the pattern displayed in the 5x5 grid, the fear meter will
+                decrease.
                 The game ends when the fear meter becomes full.
             </p>
             <p class="blocks-information"></p>
