@@ -124,6 +124,13 @@ export class Game {
 
     stopThirteenBlockCycle() {
         clearInterval(this.thirteenInterval);
+        // Increment fear meter every 13 seconds
+        this.fearMeterInterval = setInterval(() => {
+            this.increaseFearMeter(5);
+            if (this.fearMeter.value >= 100) {
+                this.gameOver();
+            }
+        }, 13000);
     }
 
     removeThirteenBlockAndPattern() {
