@@ -8,16 +8,13 @@ const menu = document.getElementById('menu');
 startGameButton.addEventListener('click', handleStartGameButtonClick);
 
 function handleStartGameButtonClick() {
-    // Get the selected level
-    const selectedLevel = document.querySelector('input[name="level"]:checked').value;
+    const info = document.querySelector("#info");
 
-    // Hide the menu and show the game container
-    menu.hidden = true;
     gameContainer.hidden = false;
 
     // Initialize and start the game
-    const game = new Game(selectedLevel, gameContainer);
-    game.start();
+    const game = new Game(gameContainer);
+    game.openModal(info);
 }
 
 handleStartGameButtonClick();

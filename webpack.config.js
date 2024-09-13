@@ -53,7 +53,6 @@ module.exports = (env, options) => {
       new ZipWebpackPlugin({
         filename: 'game_entry.zip',
         path: path.resolve(__dirname, 'dist'),
-        pathPrefix: 'build/',
         threshold: 13000, // Set your threshold here
       }),
     ],

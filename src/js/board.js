@@ -168,6 +168,9 @@ export class Board {
             this.blocks[row][col] = this.blocks[targetRow][targetCol];
             this.blocks[targetRow][targetCol] = temp;
 
+            this.game.zzfx(1,.05,284,.01,.02,.03,0,3.2,92,-15,0,0,0,0,0,0,0,.79,.02,.26,0); // Blip 239
+            this.game.moves.innerHTML = +this.game.moves.innerText + 1;
+
             // Update the display
             this.drawBoard();
         }
@@ -222,6 +225,8 @@ export class Board {
                     if (this.game.createdPatterns.length === 0) {
                         this.game.addThirteenBlockWithPattern();
                     }
+                    this.game.zzfx(1.04,0,740,.03,.01,.41,2,.2,0,0,0,0,0,1.9,0,.8,0,.39,.11,0,0); // Explosion 229
+                    this.game.rem.innerText = +this.game.rem.innerText - 1;
                     return;
                 }
             }
